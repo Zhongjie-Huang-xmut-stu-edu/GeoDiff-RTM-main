@@ -1,4 +1,4 @@
-# SSDNeRF with ResCATM & Geometry Loss
+# GeoDiff-RTM
 
 An improved version based on [SSDNeRF](https://github.com/Lakonik/SSDNeRF), incorporating **ResCATM ** and **Geometry Loss** to enhance the quality of single-view 3D reconstruction and unconditional 3D generation.
 
