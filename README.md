@@ -130,12 +130,12 @@ python tools/kitti_preproc.py
     
 ```
 cars_uncond
-    │   └── testing data: test unconditional generation
-    └── training data: train on Cars dataset, using all views per scene
+  │   └── testing data: test unconditional generation
+  └── training data: train on Cars dataset, using all views per scene
 
 cars_recons1v
-   │      └── testing data: test 3D reconstruction from 1 view
-   └── training data: train on Cars dataset, using all views per scene
+  │      └── testing data: test 3D reconstruction from 1 view
+  └── training data: train on Cars dataset, using all views per scene
    
 ```
 ##  Training
