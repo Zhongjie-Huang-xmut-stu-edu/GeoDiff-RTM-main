@@ -1,6 +1,6 @@
-# GeoDiff-RTM
+# GeoDiff-RTM: Unified 3D Reconstruction and Generation via Geometry Constrained Diffusion with Residual Token Mixing
 
-An improved version based on [SSDNeRF](https://github.com/Lakonik/SSDNeRF), incorporating **ResCATM ** and **Geometry Loss** to enhance the quality of 3D reconstruction and unconditional 3D generation.
+An improved version based on [SSDNeRF](https://github.com/Lakonik/SSDNeRF), incorporating **ResCATM ** and **Geometry Loss** to enhance the quality of single-view 3D reconstruction and unconditional 3D generation.
 
 ---
 ## Overall framework：GeoDiff-RTM
@@ -24,7 +24,7 @@ An improved version based on [SSDNeRF](https://github.com/Lakonik/SSDNeRF), inco
 The code has been tested in the environment described as follows:
 
 - Linux (tested on Ubuntu 18.04/20.04 LTS)
-- Python 3.7
+- Python 3.8
 - [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit-archive) 11
 - [PyTorch](https://pytorch.org/get-started/previous-versions/) 1.12.1
 - [MMCV](https://github.com/open-mmlab/mmcv) 1.6.0、。
@@ -42,8 +42,8 @@ export PATH=/usr/local/cuda-11.3/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda-11.3/lib64:$LD_LIBRARY_PATH
 
 # Create conda environment
-conda create -y -n ssdnerf-improved python=3.7
-conda activate ssdnerf-improved 
+conda create -y -n GeoDiff-RTM python=3.8
+conda activate GeoDiff-RTM 
 
 # Install PyTorch (this script is for CUDA 11.3)
 conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
@@ -130,12 +130,12 @@ python tools/kitti_preproc.py
     
 ```
 cars_uncond
-  │   └── testing data: test unconditional generation
-  └── training data: train on Cars dataset, using all views per scene
+    │   └── testing data: test unconditional generation
+    └── training data: train on Cars dataset, using all views per scene
 
 cars_recons1v
-  │      └── testing data: test 3D reconstruction from 1 view
-  └── training data: train on Cars dataset, using all views per scene
+   │      └── testing data: test 3D reconstruction from 1 view
+   └── training data: train on Cars dataset, using all views per scene
    
 ```
 ##  Training
@@ -166,7 +166,7 @@ model = dict(
 
 #### With Gradient Loss
 
-Enable `normal_loss` in the config file:
+Enable the `normal_loss` option, which is the gradient loss option, in the configuration file:
 
 ```python
 # configs/new_cfgs/cars_recons1v_16bit.py
