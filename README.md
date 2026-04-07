@@ -1,13 +1,11 @@
-# GeoDiff-RTM: Unified 3D Reconstruction and Generation via Geometry Constrained Diffusion with Residual Token Mixing
+# Title: GeoDiff-RTM:Unified 3D reconstruction and generation via geometry constrained diffusion with residual token mixing
 
-An improved version based on [SSDNeRF](https://github.com/Lakonik/SSDNeRF), incorporating **ResCATM ** and **Geometry Loss** to enhance the quality of single-view 3D reconstruction and unconditional 3D generation.
+## Description
 
----
-## Overall framework：GeoDiff-RTM
-![ResCATM Architecture](Framework.png)
+An improved version based on [SSDNeRF](https://github.com/Lakonik/SSDNeRF), incorporating **ResCATM** and **Geometry Loss** to enhance the quality of single-view 3D reconstruction and unconditional 3D generation.
 
 
-##  Key Improvements
+### Key Improvements
 
 | Module | Description |
 |--------|-------------|
@@ -15,72 +13,14 @@ An improved version based on [SSDNeRF](https://github.com/Lakonik/SSDNeRF), inco
 | **Edge Loss** | A Sobel-based edge-aware weighted loss to sharpen object contours |
 | **Gradient Loss** | A gradient-based consistency constraint to recover surface texture details |
 
----
+## Dataset Information
 
-##  Environment Setup
-
-### Prerequisites
-
-The code has been tested in the environment described as follows:
-
-- Linux (tested on Ubuntu 18.04/20.04 LTS)
-- Python 3.8
-- [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit-archive) 11
-- [PyTorch](https://pytorch.org/get-started/previous-versions/) 1.12.1
-- [MMCV](https://github.com/open-mmlab/mmcv) 1.6.0、。
-- [MMGeneration](https://github.com/open-mmlab/mmgeneration) 0.7.2
-
-Also, this codebase should be able to work on Windows systems as well (tested in the inference mode).
-
-Other dependencies can be installed via `pip install -r requirements.txt`. 
-
-An example of commands for installing the Python packages is shown below:
-
-```bash
-# Export the PATH of CUDA toolkit
-export PATH=/usr/local/cuda-11.3/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda-11.3/lib64:$LD_LIBRARY_PATH
-
-# Create conda environment
-conda create -y -n GeoDiff-RTM python=3.8
-conda activate GeoDiff-RTM 
-
-# Install PyTorch (this script is for CUDA 11.3)
-conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
-
-# Install MMCV and MMGeneration
-pip install -U openmim
-mim install mmcv-full==1.6
-git clone https://github.com/open-mmlab/mmgeneration && cd mmgeneration && git checkout v0.7.2
-pip install -v -e .
-cd ..
-
-# Clone this repo and install other dependencies
-git clone <this repo> && cd <repo folder>
-pip install -r requirements.txt
-```
-### Compile CUDA packages
-
-There are two CUDA packages from [torch-ngp](https://github.com/ashawkey/torch-ngp) that need to be built locally.
-
-```bash
-cd lib/ops/raymarching/
-pip install -e .
-cd ../shencoder/
-pip install -e .
-cd ../../..
-```
-
-
-## Data preparation
-
-Download `srn_cars.zip` and `srn_chairs.zip` from [here](https://drive.google.com/drive/folders/1PsT3uKwqHHD2bEEHkIXB99AlIjtmrEiR).
+Download `srn_cars.zip` and `srn_chairs.zip` from [here](https://doi.org/10.5281/zenodo.19449785).
 Unzip them to `./data/shapenet`.
 
-Download `abo_tables.zip` from [here](https://drive.google.com/file/d/1lzw3uYbpuCxWBYYqYyL4ZEFomBOUN323/view?usp=share_link). Unzip it to `./data/abo`. For convenience I have converted the ABO dataset into PixelNeRF's SRN format.
+Download `abo_tables.zip` from [here](https://doi.org/10.5281/zenodo.19449785). Unzip it to `./data/abo`. For convenience I have converted the ABO dataset into PixelNeRF's SRN format.
 
 If you want to try single-view reconstruction on the real KITTI Cars dataset, please download the official [KITTI 3D object dataset](http://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=3d), including [left color images](http://www.cvlibs.net/download.php?file=data_object_image_2.zip), [calibration files](http://www.cvlibs.net/download.php?file=data_object_calib.zip), [training labels](http://www.cvlibs.net/download.php?file=data_object_label_2.zip), and [instance segmentations](https://github.com/HeylenJonas/KITTI3D-Instance-Segmentation-Devkit).
-
 
 Extract the downloaded archives according to the following folder tree (or use symlinks).
 
@@ -124,9 +64,11 @@ For KITTI Cars preprocessing, run the following command.
 python tools/kitti_preproc.py
 ```
 
-## About the configs
+## Code Information
 
-### Naming convention
+### About the configs
+
+**Naming convention**
     
 ```
 cars_uncond
@@ -138,15 +80,18 @@ cars_recons1v
    └── training data: train on Cars dataset, using all views per scene
    
 ```
-##  Training
 
-### Reconstruction
+## Usage Instructions
+
+### Training
+
+#### Reconstruction
 
 ```bash
 python train.py configs/new_cfgs/cars_recons1v_16bit.py --gpu-ids 0 1
 ```
 
-#### With Edge Loss
+**With Edge Loss**
 
 Enable `edge_loss` in the config file:
 
@@ -164,7 +109,7 @@ model = dict(
 )
 ```
 
-#### With Gradient Loss
+**With Gradient Loss**
 
 Enable the `normal_loss` option, which is the gradient loss option, in the configuration file:
 
@@ -181,9 +126,7 @@ model = dict(
 )
 ```
 
-
-
-Enable ResCATM  :
+**Enable ResCATM** :
 ```python
 # configs/new_cfgs/cars_uncond_16bit.py
 model = dict(
@@ -202,49 +145,41 @@ model = dict(
 )
 ```
 
-### Unconditional Generation
+#### Unconditional Generation
 
 ```bash
 python train.py configs/new_cfgs/cars_uncond_16bit.py --gpu-ids 0 1
 ```
 
+### Testing
 
-##  Testing
-
-###  Reconstruction
+#### Reconstruction
 
 ```bash
 python test.py configs/new_cfgs/cars_recons1v_16bit.py work_dirs/YOUR_CHECKPOINT.pth --gpu-ids 0 1
 ```
 
-### Unconditional Generation
+#### Unconditional Generation
 
 ```bash
 python test.py configs/new_cfgs/cars_uncond_16bit.py work_dirs/YOUR_CHECKPOINT.pth --gpu-ids 0 1
 ```
 
+### Visualization Tools
 
-##  Visualization Tools
-
-### Edge Loss Visualization
+#### Edge Loss Visualization
 
 ```bash
 python tools/visualize_edge_loss.py
 ```
 
-### Gradient Loss Visualization
+#### Gradient Loss Visualization
 
 ```bash
 python tools/visualize_gradient_loss.py
 ```
 
 > Please modify the image path at the top of each script before running.
-
-
-##  Acknowledgements
-
-This project is built upon [SSDNeRF](https://github.com/Lakonik/SSDNeRF). 
-The design of ResCATM is inspired by [CAS-ViT](https://github.com/Tianfang-Zhang/CAS-ViT). We thank the original authors for their open-source contributions.
 
 ### Training Time Reference
 
@@ -257,5 +192,62 @@ The design of ResCATM is inspired by [CAS-ViT](https://github.com/Tianfang-Zhang
 | Unconditional Generation | SRN Cars | 500,000 | ~5-6 days |
 | Unconditional Generation | ABO Tables | 500,000 | ~5-6 days |
 
+### Acknowledgements
 
+This project is built upon [SSDNeRF](https://github.com/Lakonik/SSDNeRF). 
+The design of ResCATM is inspired by [CAS-ViT](https://github.com/Tianfang-Zhang/CAS-ViT). We thank the original authors for their open-source contributions.
 
+## Requirements
+
+### Prerequisites
+
+The code has been tested in the environment described as follows:
+
+- Linux (tested on Ubuntu 18.04/20.04 LTS)
+- Python 3.8
+- [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit-archive) 11
+- [PyTorch](https://pytorch.org/get-started/previous-versions/) 1.12.1
+- [MMCV](https://github.com/open-mmlab/mmcv) 1.6.0
+- [MMGeneration](https://github.com/open-mmlab/mmgeneration) 0.7.2
+
+Also, this codebase should be able to work on Windows systems as well (tested in the inference mode).
+
+Other dependencies can be installed via `pip install -r requirements.txt`. 
+
+An example of commands for installing the Python packages is shown below:
+
+```bash
+# Export the PATH of CUDA toolkit
+export PATH=/usr/local/cuda-11.3/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-11.3/lib64:$LD_LIBRARY_PATH
+
+# Create conda environment
+conda create -y -n GeoDiff-RTM python=3.8
+conda activate GeoDiff-RTM 
+
+# Install PyTorch (this script is for CUDA 11.3)
+conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
+
+# Install MMCV and MMGeneration
+pip install -U openmim
+mim install mmcv-full==1.6
+git clone https://github.com/open-mmlab/mmgeneration && cd mmgeneration && git checkout v0.7.2
+pip install -v -e .
+cd ..
+
+# Clone this repo and install other dependencies
+git clone <this repo> && cd <repo folder>
+pip install -r requirements.txt
+```
+
+### Compile CUDA packages
+
+There are two CUDA packages from [torch-ngp](https://github.com/ashawkey/torch-ngp) that need to be built locally.
+
+```bash
+cd lib/ops/raymarching/
+pip install -e .
+cd ../shencoder/
+pip install -e .
+cd ../../..
+```
